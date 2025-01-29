@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lexers", "Lexers\Lexers.csproj", "{9CE53CC5-367A-4ABB-B6CA-0B4C6DE8CEEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LexerTests", "LexerTests\LexerTests.csproj", "{94D9492E-4086-473A-A358-E07E5103A49E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9CE53CC5-367A-4ABB-B6CA-0B4C6DE8CEEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9CE53CC5-367A-4ABB-B6CA-0B4C6DE8CEEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9CE53CC5-367A-4ABB-B6CA-0B4C6DE8CEEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9CE53CC5-367A-4ABB-B6CA-0B4C6DE8CEEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94D9492E-4086-473A-A358-E07E5103A49E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94D9492E-4086-473A-A358-E07E5103A49E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94D9492E-4086-473A-A358-E07E5103A49E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94D9492E-4086-473A-A358-E07E5103A49E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2793103-EDFE-4ACB-A2C1-B2A2C0C5D696}
+	EndGlobalSection
+EndGlobal
