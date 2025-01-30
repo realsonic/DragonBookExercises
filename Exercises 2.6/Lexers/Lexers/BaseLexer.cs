@@ -3,61 +3,83 @@ using Lexers.Tokens.Keywords;
 
 namespace Lexers;
 
-public class BaseLexer(IEnumerable<char> input)
+public class BaseLexer
 {
+    public BaseLexer(IEnumerable<char> input)
+    {
+        inputEnumerator = input.GetEnumerator();
+        hasCurrentChar = inputEnumerator.MoveNext();
+    }
+
     public IEnumerable<Token> Scan()
     {
-        while (inputEnumerator.MoveNext())
+        Token? token;
+        while ((token = GetNextToken()) != null)
         {
-            if (inputEnumerator.Current is ' ' or '\t')
-            {
-                continue;
-            }
-
-            if (inputEnumerator.Current == '\n')
-            {
-                Line++;
-                continue;
-            }
-
-            if (char.IsDigit(inputEnumerator.Current))
-            {
-                string numChars = inputEnumerator.Current.ToString();
-                while (inputEnumerator.MoveNext() && char.IsDigit(inputEnumerator.Current))
-                {
-                    numChars += inputEnumerator.Current;
-                }
-
-                yield return new NumberToken(numChars, int.Parse(numChars));
-            }
-
-            if (char.IsLetter(inputEnumerator.Current))
-            {
-                string wordChars = inputEnumerator.Current.ToString();
-                while (inputEnumerator.MoveNext() && char.IsLetterOrDigit(inputEnumerator.Current))
-                {
-                    wordChars += inputEnumerator.Current;
-                }
-
-                if (Words.TryGetValue(wordChars, out Token? token))
-                {
-                    yield return token;
-                }
-
-                yield return new IdToken(wordChars);
-            }
-
-            yield return new Token(inputEnumerator.Current.ToString());
+            yield return token;
         }
+    }
+
+    public Token? GetNextToken()
+    {
+        while (CurrentChar is ' ' or '\t' or '\n')
+        {
+            if (CurrentChar is '\n')
+                Line++;
+
+            NextChar();
+            continue;
+        }
+
+        if (CurrentChar is not null && char.IsDigit(CurrentChar.Value))
+        {
+            string numberString = string.Empty;
+            do
+            {
+                numberString += CurrentChar;
+                NextChar();
+            } while (CurrentChar is not null && char.IsDigit(CurrentChar.Value));
+
+            return new NumberToken(numberString, int.Parse(numberString));
+        }
+
+        if (CurrentChar is not null && char.IsLetter(CurrentChar.Value))
+        {
+            string wordString = string.Empty;
+            do
+            {
+                wordString += CurrentChar;
+                NextChar();
+            } while (CurrentChar is not null && char.IsLetterOrDigit(CurrentChar.Value));
+
+            if (Words.TryGetValue(wordString, out Token? token))
+                return token;
+
+            return new IdToken(wordString);
+        }
+
+        if (CurrentChar is not null)
+            return new Token(CurrentChar.Value.ToString());
+
+        return null;
     }
 
     public int Line { get; private set; } = 1;
 
-    private readonly IEnumerator<char> inputEnumerator = input.GetEnumerator();
+    #region Private members
+
+    private readonly IEnumerator<char> inputEnumerator;
+
+    private char? CurrentChar => hasCurrentChar ? inputEnumerator.Current : null;
+    private void NextChar() => hasCurrentChar = inputEnumerator.MoveNext();
+
+    private bool hasCurrentChar;
 
     private readonly Dictionary<string, Token> Words = new()
     {
         { "true", new TrueToken() },
         { "false", new FalseToken() }
     };
+
+    #endregion
 }
