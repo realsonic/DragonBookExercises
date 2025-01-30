@@ -53,7 +53,9 @@ public class BaseLexer
             if (Words.TryGetValue(wordString, out Token? token))
                 return token;
 
-            return new IdToken(wordString);
+            IdToken idToken = new(wordString);
+            Words.Add(wordString, idToken);
+            return idToken;
         }
 
         if (CurrentChar is not null)
