@@ -57,7 +57,11 @@ public class BaseLexer
         }
 
         if (CurrentChar is not null)
-            return new Token(CurrentChar.Value.ToString());
+        {
+            Token token = new(CurrentChar.Value.ToString());
+            NextChar();
+            return token;
+        }
 
         return null;
     }

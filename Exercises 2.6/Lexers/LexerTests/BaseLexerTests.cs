@@ -82,4 +82,20 @@ public class BaseLexerTests
         firstToken.Should().Be(new IdToken("id1"));
         secondToken.Should().Be(new IdToken("id2"));
     }
+
+    [Fact(DisplayName = "Другие символы возвращаются как отдельные токены")]
+    public void Others_parsed()
+    {
+        // Arrange
+        BaseLexer sut = new(" ~ !@\n$");
+
+        // Act
+        var tokens = sut.Scan();
+
+        // Assert
+        tokens.Should().BeEquivalentTo(new Token[]
+        {
+            new("~"), new("!"), new("@"), new("$")
+        });
+    }
 }
