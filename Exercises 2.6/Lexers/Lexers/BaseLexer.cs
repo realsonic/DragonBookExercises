@@ -22,13 +22,11 @@ public class BaseLexer
 
     public Token? GetNextToken()
     {
-        while (CurrentChar is ' ' or '\t' or '\n')
+        for (; ; NextChar())
         {
-            if (CurrentChar is '\n')
-                Line++;
-
-            NextChar();
-            continue;
+            if (CurrentChar is ' ' or '\t') continue;
+            else if (CurrentChar is '\n') Line++;
+            else break;
         }
 
         if (CurrentChar is not null && char.IsDigit(CurrentChar.Value))
