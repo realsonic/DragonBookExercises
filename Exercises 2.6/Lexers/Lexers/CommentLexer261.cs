@@ -24,8 +24,23 @@ public class CommentLexer261
     {
         for (; ; NextChar())
         {
-            if (CurrentChar is ' ' or '\t') continue;
+            if (CurrentChar is ' ' or '\t' or '\r') continue;
             else if (CurrentChar is '\n') Line++;
+            else if (CurrentChar is '/')
+            {
+                NextChar();
+                if (CurrentChar is '/')
+                {
+                    do
+                    {
+                        NextChar();
+                    } while (CurrentChar is not null and not '\n');
+                }
+                else
+                {
+                    return new Token("/");
+                }
+            }
             else break;
         }
 

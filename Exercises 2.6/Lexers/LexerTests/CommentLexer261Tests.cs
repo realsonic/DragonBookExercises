@@ -115,6 +115,30 @@ public class CommentLexer261Tests
         tokens.Should().BeEmpty();
     }
 
+    [Fact(DisplayName = "Число и слэши между однострочными комментариями возвращаются")]
+    public void Number_and_slash_extracted_between_singleline_comments()
+    {
+        // Arrange
+        CommentLexer261 sut = new("""
+            // Комментарий 1
+            1234
+            // Комментарий 2
+            / /
+            // Комментарий 3
+            """);
+
+        // Act
+        var tokens = sut.Scan();
+
+        // Assert
+        tokens.Should().BeEquivalentTo(new Token[]
+        {
+            new NumberToken("1234", 1234),
+            new("/"),
+            new("/")
+        });
+    }
+
     [Fact(DisplayName = "Многострочные комментарии пропускаются")]
     public void Multi_line_comments_skipped()
     {
