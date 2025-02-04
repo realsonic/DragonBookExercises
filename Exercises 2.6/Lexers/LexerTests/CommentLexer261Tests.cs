@@ -15,7 +15,7 @@ public class CommentLexer261Tests
         CommentLexer261 sut = new(" \t  \n ");
 
         // Act
-        var tokens = sut.Scan();
+        var tokens = sut.ScanWithMonads();
 
         // Assert
         tokens.Should().BeEmpty();
@@ -28,11 +28,13 @@ public class CommentLexer261Tests
         CommentLexer261 sut = new(" \n \n ");
 
         // Act
-        var tokens = sut.Scan();
+        var tokens = sut.ScanWithMonads();
+        
+        // !!!!!! todo для монад у нас Line хранится в позиции, а не в лексере!
 
         // Assert
         tokens.Should().BeEmpty();
-        sut.Line.Should().Be(3);
+        sut.CurrentPosition.Line.Should().Be(3);
     }
 
     [Fact(DisplayName = "Числа распознаются")]
@@ -42,7 +44,7 @@ public class CommentLexer261Tests
         CommentLexer261 sut = new("1 23 456");
 
         // Act
-        var tokens = sut.Scan();
+        var tokens = sut.ScanWithMonads();
 
         // Assert
         tokens.Should().BeEquivalentTo(new NumberToken[]

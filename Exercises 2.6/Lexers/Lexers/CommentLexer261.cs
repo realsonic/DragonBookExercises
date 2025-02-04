@@ -1,4 +1,6 @@
-﻿using Lexers.Tokens;
+﻿using Lexers.Monads;
+using Lexers.Monads.Language;
+using Lexers.Tokens;
 using Lexers.Tokens.Keywords;
 
 namespace Lexers;
@@ -8,7 +10,7 @@ public class CommentLexer261
     public CommentLexer261(IEnumerable<char> input)
     {
         inputEnumerator = input.GetEnumerator();
-        hasCurrentChar = inputEnumerator.MoveNext();
+        //hasCurrentChar = inputEnumerator.MoveNext();
     }
 
     public IEnumerable<Token> Scan()
@@ -25,7 +27,7 @@ public class CommentLexer261
         for (; ; NextChar())
         {
             if (CurrentChar is ' ' or '\t' or '\r') continue;
-            else if (CurrentChar is '\n') Line++;
+            else if (CurrentChar is '\n') /*TODO Line++*/;
             else if (CurrentChar is '/')
             {
                 NextChar();
@@ -83,7 +85,59 @@ public class CommentLexer261
         return null;
     }
 
-    public int Line { get; private set; } = 1;
+    public IEnumerable<Token> ScanWithMonads()
+    {
+        UncompletedMonad uncompletedMonad = new RootMonad(new Position(1, 0));
+
+        while (inputEnumerator.MoveNext())
+        {
+            LexemeMonad monad = uncompletedMonad + inputEnumerator.Current;
+
+            CurrentPosition = monad.Position;
+
+            while (monad is CompletedLexemeMonad completed)
+            {
+                yield return completed.Token;
+                if (completed.Remain is not null)
+                    monad = completed.Remain;
+                else
+                    break;
+            }
+
+            switch (monad)
+            {
+                case UncompletedMonad uncompleted:
+                    uncompletedMonad = uncompleted;
+                    break;
+                case UnknownLexemeMonad unknown:
+                    yield return new Token(unknown.Lexeme);
+                    uncompletedMonad = new RootMonad(unknown.Position);
+                    break;
+            }
+        }
+
+        LexemeMonad finalMonad = uncompletedMonad.Finalize();
+        while (finalMonad is CompletedLexemeMonad completed)
+        {
+            yield return completed.Token;
+            if (completed.Remain is not null)
+                finalMonad = completed.Remain;
+            else
+                break;
+        }
+
+        switch (finalMonad)
+        {
+            case UncompletedMonad uncompleted and not RootMonad:
+                throw new InvalidOperationException($"После финализации монада не завершена: {uncompleted}");
+            case UnknownLexemeMonad unknown:
+                yield return new Token(unknown.Lexeme);
+                break;
+        }
+    }
+
+    //public int Line { get; private set; } = 1;
+    public Position CurrentPosition { get; private set; } = new(1, 0);
 
     #region Private members
 
