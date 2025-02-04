@@ -87,7 +87,7 @@ public class CommentLexer261
 
     public IEnumerable<Token> ScanWithMonads()
     {
-        UncompletedMonad uncompletedMonad = new RootMonad(new Position(1, 0));
+        UncompletedLexemeMonad uncompletedMonad = new RootMonad(new Position(1, 0));
 
         while (inputEnumerator.MoveNext())
         {
@@ -106,7 +106,7 @@ public class CommentLexer261
 
             switch (monad)
             {
-                case UncompletedMonad uncompleted:
+                case UncompletedLexemeMonad uncompleted:
                     uncompletedMonad = uncompleted;
                     break;
                 case UnknownLexemeMonad unknown:
@@ -128,7 +128,7 @@ public class CommentLexer261
 
         switch (finalMonad)
         {
-            case UncompletedMonad uncompleted and not RootMonad:
+            case UncompletedLexemeMonad uncompleted and not RootMonad:
                 throw new InvalidOperationException($"После финализации монада не завершена: {uncompleted}");
             case UnknownLexemeMonad unknown:
                 yield return new Token(unknown.Lexeme);

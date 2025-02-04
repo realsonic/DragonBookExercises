@@ -2,7 +2,7 @@
 
 namespace Lexers.Monads.Language;
 
-public record UncompletedNumberMonad(string Lexeme, Position Position) : UncompletedMonad(Lexeme, Position)
+public record UncompletedNumberMonad(string Lexeme, Position Position) : UncompletedLexemeMonad(Lexeme, Position)
 {
     public override LexemeMonad Append(char character)
     {

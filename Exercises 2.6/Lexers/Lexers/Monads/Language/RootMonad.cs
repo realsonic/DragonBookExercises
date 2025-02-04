@@ -1,6 +1,6 @@
 ﻿namespace Lexers.Monads.Language;
 
-public record RootMonad(Position Position) : UncompletedMonad(string.Empty, Position)
+public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty, Position)
 {
     public override LexemeMonad Append(char character)
     {
