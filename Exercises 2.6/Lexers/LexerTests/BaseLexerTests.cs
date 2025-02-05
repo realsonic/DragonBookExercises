@@ -47,9 +47,9 @@ public class BaseLexerTests
         // Assert
         tokens.Should().BeEquivalentTo(new NumberToken[]
         {
-            new("1", 1),
-            new("23", 23),
-            new("456", 456)
+            new("1", null, 1),
+            new("23", null, 23),
+            new("456", null, 456)
         });
     }
 
@@ -64,8 +64,8 @@ public class BaseLexerTests
         Token? secondToken = sut.GetNextToken();
 
         // Assert
-        firstToken.Should().Be(new TrueToken());
-        secondToken.Should().Be(new FalseToken());
+        firstToken.Should().Be(new TrueToken(null));
+        secondToken.Should().Be(new FalseToken(null));
     }
 
     [Fact(DisplayName = "Идентификаторы распознаются")]
@@ -79,8 +79,8 @@ public class BaseLexerTests
         Token? secondToken = sut.GetNextToken();
 
         // Assert
-        firstToken.Should().Be(new IdToken("id1"));
-        secondToken.Should().Be(new IdToken("id2"));
+        firstToken.Should().Be(new IdToken("id1", null));
+        secondToken.Should().Be(new IdToken("id2", null));
     }
 
     [Fact(DisplayName = "Другие символы возвращаются как отдельные токены")]
@@ -95,7 +95,7 @@ public class BaseLexerTests
         // Assert
         tokens.Should().BeEquivalentTo(new Token[]
         {
-            new("~"), new("!"), new("@"), new("$")
+            new("~", null), new("!", null), new("@", null), new("$", null)
         });
     }
 }

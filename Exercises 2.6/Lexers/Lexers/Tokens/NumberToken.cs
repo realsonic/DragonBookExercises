@@ -1,3 +1,5 @@
-﻿namespace Lexers.Tokens;
+﻿using Lexers.Locations;
 
-public record NumberToken(string Lexeme, int Value) : Token(Lexeme);
+namespace Lexers.Tokens;
+
+public record NumberToken(string Lexeme, Location Location, int Value) : Token(Lexeme, Location);

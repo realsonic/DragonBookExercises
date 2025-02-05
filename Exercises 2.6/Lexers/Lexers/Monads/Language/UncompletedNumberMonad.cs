@@ -1,22 +1,23 @@
-﻿using Lexers.Tokens;
+﻿using Lexers.Locations;
+using Lexers.Tokens;
 
 namespace Lexers.Monads.Language;
 
-public record UncompletedNumberMonad(string Lexeme, Position Position) : UncompletedLexemeMonad(Lexeme, Position)
+public record UncompletedNumberMonad(string Lexeme, Location Location) : UncompletedLexemeMonad(Lexeme, Location)
 {
-    public override LexemeMonad Append(char character)
+    public override LexemeMonad Append(char character, Position position)
     {
         if (char.IsDigit(character))
-            return new UncompletedNumberMonad(Lexeme + character, Position.AddColumn());
+            return new UncompletedNumberMonad(Lexeme + character, Location.EndAt(position));
 
         return new CompletedLexemeMonad(
-            Token: new NumberToken(Lexeme, int.Parse(Lexeme)),
-            Position: Position,
-            Remain: new RootMonad(Position) + character);
+            Token: new NumberToken(Lexeme, Location, int.Parse(Lexeme)),
+            Location: Location,
+            Remain: new RootMonad(position) + (character, position));
     }
 
     public override LexemeMonad Finalize() => new CompletedLexemeMonad(
-            Token: new NumberToken(Lexeme, int.Parse(Lexeme)),
-            Position: Position,
+            Token: new NumberToken(Lexeme, Location, int.Parse(Lexeme)),
+            Location: Location,
             Remain: null);
 }

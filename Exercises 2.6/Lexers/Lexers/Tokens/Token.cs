@@ -1,3 +1,5 @@
-﻿namespace Lexers.Tokens;
+﻿using Lexers.Locations;
 
-public record Token(string Lexeme);
+namespace Lexers.Tokens;
+
+public record Token(string Lexeme, Location Location);

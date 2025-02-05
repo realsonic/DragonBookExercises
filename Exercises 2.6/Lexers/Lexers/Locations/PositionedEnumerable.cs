@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Lexers;
+namespace Lexers.Locations;
 
 public class PositionedEnumerable(IEnumerable<char> enumerable) : IEnumerable<(char, Position)>
 {
@@ -16,12 +16,13 @@ public class PositionedEnumerable(IEnumerable<char> enumerable) : IEnumerable<(c
 
     private IEnumerable<(char, Position)> Enumerate()
     {
-        Position position = new(1, 0);
+        Position position = Position.Initial;
 
         foreach (char character in enumerable)
         {
-            position = character is '\n' ? position.NewLine() : position.AddColumn();
             yield return (character, position);
+
+            position = character is '\n' ? position.NewLine() : position.AddColumn();
         }
     }
 }

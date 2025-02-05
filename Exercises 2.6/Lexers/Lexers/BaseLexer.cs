@@ -38,7 +38,7 @@ public class BaseLexer
                 NextChar();
             } while (CurrentChar is not null && char.IsDigit(CurrentChar.Value));
 
-            return new NumberToken(numberString, int.Parse(numberString));
+            return new NumberToken(numberString, null/*TODO*/, int.Parse(numberString));
         }
 
         if (CurrentChar is not null && char.IsLetter(CurrentChar.Value))
@@ -53,14 +53,14 @@ public class BaseLexer
             if (Words.TryGetValue(wordString, out Token? token))
                 return token;
 
-            IdToken idToken = new(wordString);
+            IdToken idToken = new(wordString, null/*TODO*/);
             Words.Add(wordString, idToken);
             return idToken;
         }
 
         if (CurrentChar is not null)
         {
-            Token token = new(CurrentChar.Value.ToString());
+            Token token = new(CurrentChar.Value.ToString(), null/*TODO*/);
             NextChar();
             return token;
         }
@@ -81,8 +81,8 @@ public class BaseLexer
 
     private readonly Dictionary<string, Token> Words = new()
     {
-        { "true", new TrueToken() },
-        { "false", new FalseToken() }
+        { "true", new TrueToken(null) },
+        { "false", new FalseToken(null) }
     };
 
     #endregion

@@ -1,3 +1,5 @@
-﻿namespace Lexers.Monads;
+﻿using Lexers.Locations;
 
-public record UnknownLexemeMonad(string Lexeme, Position Position) : LexemeMonad(Lexeme, Position);
+namespace Lexers.Monads;
+
+public record UnknownLexemeMonad(string Lexeme, Location Location) : LexemeMonad(Lexeme, Location);

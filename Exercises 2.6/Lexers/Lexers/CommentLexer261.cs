@@ -1,99 +1,99 @@
-﻿using Lexers.Monads;
+﻿using Lexers.Locations;
+using Lexers.Monads;
 using Lexers.Monads.Language;
 using Lexers.Tokens;
-using Lexers.Tokens.Keywords;
 
 namespace Lexers;
 
-public class CommentLexer261
+public class CommentLexer261(IEnumerable<char> input)
 {
-    public CommentLexer261(IEnumerable<char> input)
-    {
-        inputEnumerator = input.GetEnumerator();
-        //hasCurrentChar = inputEnumerator.MoveNext();
-    }
+    //public CommentLexer261
+    //{
+    //    inputEnumerator = input.GetEnumerator();
+    //    //hasCurrentChar = inputEnumerator.MoveNext();
+    //}
 
-    public IEnumerable<Token> Scan()
-    {
-        Token? token;
-        while ((token = GetNextToken()) != null)
-        {
-            yield return token;
-        }
-    }
+    //public IEnumerable<Token> Scan()
+    //{
+    //    Token? token;
+    //    while ((token = GetNextToken()) != null)
+    //    {
+    //        yield return token;
+    //    }
+    //}
 
-    public Token? GetNextToken()
-    {
-        for (; ; NextChar())
-        {
-            if (CurrentChar is ' ' or '\t' or '\r') continue;
-            else if (CurrentChar is '\n') /*TODO Line++*/;
-            else if (CurrentChar is '/')
-            {
-                NextChar();
-                if (CurrentChar is '/')
-                {
-                    do
-                    {
-                        NextChar();
-                    } while (CurrentChar is not null and not '\n');
-                }
-                else
-                {
-                    return new Token("/");
-                }
-            }
-            else break;
-        }
+    //public Token? GetNextToken()
+    //{
+    //    for (; ; NextChar())
+    //    {
+    //        if (CurrentChar is ' ' or '\t' or '\r') continue;
+    //        else if (CurrentChar is '\n') /*TODO Line++*/;
+    //        else if (CurrentChar is '/')
+    //        {
+    //            NextChar();
+    //            if (CurrentChar is '/')
+    //            {
+    //                do
+    //                {
+    //                    NextChar();
+    //                } while (CurrentChar is not null and not '\n');
+    //            }
+    //            else
+    //            {
+    //                return new Token("/");
+    //            }
+    //        }
+    //        else break;
+    //    }
 
-        if (CurrentChar is not null && char.IsDigit(CurrentChar.Value))
-        {
-            string numberString = string.Empty;
-            do
-            {
-                numberString += CurrentChar;
-                NextChar();
-            } while (CurrentChar is not null && char.IsDigit(CurrentChar.Value));
+    //    if (CurrentChar is not null && char.IsDigit(CurrentChar.Value))
+    //    {
+    //        string numberString = string.Empty;
+    //        do
+    //        {
+    //            numberString += CurrentChar;
+    //            NextChar();
+    //        } while (CurrentChar is not null && char.IsDigit(CurrentChar.Value));
 
-            return new NumberToken(numberString, int.Parse(numberString));
-        }
+    //        return new NumberToken(numberString, int.Parse(numberString));
+    //    }
 
-        if (CurrentChar is not null && char.IsLetter(CurrentChar.Value))
-        {
-            string wordString = string.Empty;
-            do
-            {
-                wordString += CurrentChar;
-                NextChar();
-            } while (CurrentChar is not null && char.IsLetterOrDigit(CurrentChar.Value));
+    //    if (CurrentChar is not null && char.IsLetter(CurrentChar.Value))
+    //    {
+    //        string wordString = string.Empty;
+    //        do
+    //        {
+    //            wordString += CurrentChar;
+    //            NextChar();
+    //        } while (CurrentChar is not null && char.IsLetterOrDigit(CurrentChar.Value));
 
-            if (Words.TryGetValue(wordString, out Token? token))
-                return token;
+    //        if (Words.TryGetValue(wordString, out Token? token))
+    //            return token;
 
-            IdToken idToken = new(wordString);
-            Words.Add(wordString, idToken);
-            return idToken;
-        }
+    //        IdToken idToken = new(wordString);
+    //        Words.Add(wordString, idToken);
+    //        return idToken;
+    //    }
 
-        if (CurrentChar is not null)
-        {
-            Token token = new(CurrentChar.Value.ToString());
-            NextChar();
-            return token;
-        }
+    //    if (CurrentChar is not null)
+    //    {
+    //        Token token = new(CurrentChar.Value.ToString());
+    //        NextChar();
+    //        return token;
+    //    }
 
-        return null;
-    }
+    //    return null;
+    //}
 
     public IEnumerable<Token> ScanWithMonads()
     {
-        UncompletedLexemeMonad uncompletedMonad = new RootMonad(new Position(1, 0));
+        UncompletedLexemeMonad uncompletedMonad = new RootMonad(Position.Initial);
 
-        while (inputEnumerator.MoveNext())
+        foreach ((char character, Position position) in new PositionedEnumerable(input))
         {
-            LexemeMonad monad = uncompletedMonad + inputEnumerator.Current;
+            LexemeMonad monad = uncompletedMonad + (character, position);
 
-            CurrentPosition = monad.Position;
+            CurrentPosition = monad.Location.End;
 
             while (monad is CompletedLexemeMonad completed)
             {
@@ -110,8 +110,8 @@ public class CommentLexer261
                     uncompletedMonad = uncompleted;
                     break;
                 case UnknownLexemeMonad unknown:
-                    yield return new Token(unknown.Lexeme);
-                    uncompletedMonad = new RootMonad(unknown.Position);
+                    yield return new Token(unknown.Lexeme, unknown.Location);
+                    uncompletedMonad = new RootMonad(unknown.Location.End);
                     break;
             }
         }
@@ -131,7 +131,7 @@ public class CommentLexer261
             case UncompletedLexemeMonad uncompleted and not RootMonad:
                 throw new InvalidOperationException($"После финализации монада не завершена: {uncompleted}");
             case UnknownLexemeMonad unknown:
-                yield return new Token(unknown.Lexeme);
+                yield return new Token(unknown.Lexeme, unknown.Location);
                 break;
         }
     }
@@ -141,18 +141,18 @@ public class CommentLexer261
 
     #region Private members
 
-    private readonly IEnumerator<char> inputEnumerator;
+    //private readonly IEnumerator<char> inputEnumerator;
 
-    private char? CurrentChar => hasCurrentChar ? inputEnumerator.Current : null;
-    private void NextChar() => hasCurrentChar = inputEnumerator.MoveNext();
+    //private char? CurrentChar => hasCurrentChar ? inputEnumerator.Current : null;
+    //private void NextChar() => hasCurrentChar = inputEnumerator.MoveNext();
 
     private bool hasCurrentChar;
 
-    private readonly Dictionary<string, Token> Words = new()
-    {
-        { "true", new TrueToken() },
-        { "false", new FalseToken() }
-    };
+    //private readonly Dictionary<string, Token> Words = new()
+    //{
+    //    { "true", new TrueToken() },
+    //    { "false", new FalseToken() }
+    //};
 
     #endregion
 }
