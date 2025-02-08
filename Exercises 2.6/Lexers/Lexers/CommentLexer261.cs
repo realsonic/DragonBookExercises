@@ -85,7 +85,7 @@ public class CommentLexer261(IEnumerable<char> input)
     //    return null;
     //}
 
-    public IEnumerable<Token> ScanWithMonads()
+    public IEnumerable<Token> Scan()
     {
         UncompletedLexemeMonad uncompletedMonad = new RootMonad(Position.Initial);
 
