@@ -6,13 +6,13 @@ using Lexers.Tokens.Keywords;
 
 namespace LexerTests;
 
-public class CommentLexer261Tests
+public class MonadLexerTests
 {
     [Fact(DisplayName = "Строка пробельных символов не возвращает токенов")]
     public void Whitespace_string_returns_no_tokens()
     {
         // Arrange
-        CommentLexer261 sut = new(" \t  \n ");
+        MonadLexer sut = new(" \t  \n ");
 
         // Act
         var tokens = sut.Scan();
@@ -25,7 +25,7 @@ public class CommentLexer261Tests
     public void Two_new_lines_gives_Line_3()
     {
         // Arrange
-        CommentLexer261 sut = new(" \n \n ");
+        MonadLexer sut = new(" \n \n ");
 
         // Act
         var tokens = sut.Scan();
@@ -39,7 +39,7 @@ public class CommentLexer261Tests
     public void Numbers_parsed()
     {
         // Arrange
-        CommentLexer261 sut = new("1 23 456");
+        MonadLexer sut = new("1 23 456");
 
         // Act
         var tokens = sut.Scan();
@@ -57,7 +57,7 @@ public class CommentLexer261Tests
     public void Boolean_parsed()
     {
         // Arrange
-        CommentLexer261 sut = new("true false");
+        MonadLexer sut = new("true false");
 
         // Act
         var tokens = sut.Scan().ToList();
@@ -71,7 +71,7 @@ public class CommentLexer261Tests
     public void Id_parsed()
     {
         // Arrange
-        CommentLexer261 sut = new("id1 id2");
+        MonadLexer sut = new("id1 id2");
 
         // Act
         var tokens = sut.Scan().ToList();
@@ -85,7 +85,7 @@ public class CommentLexer261Tests
     public void Others_parsed()
     {
         // Arrange
-        CommentLexer261 sut = new(" ~ !@\n$");
+        MonadLexer sut = new(" ~ !@\n$");
 
         // Act
         var tokens = sut.Scan();
@@ -101,7 +101,7 @@ public class CommentLexer261Tests
     public void Single_line_comments_skipped()
     {
         // Arrange
-        CommentLexer261 sut = new("""
+        MonadLexer sut = new("""
             // Комментарий 1
             // Комментарий 2
             """);
@@ -117,7 +117,7 @@ public class CommentLexer261Tests
     public void Number_and_slash_extracted_between_singleline_comments()
     {
         // Arrange
-        CommentLexer261 sut = new("""
+        MonadLexer sut = new("""
             // Комментарий 1
             1234
             // Комментарий 2
@@ -141,7 +141,7 @@ public class CommentLexer261Tests
     public void Multi_line_comments_skipped()
     {
         // Arrange
-        CommentLexer261 sut = new("""
+        MonadLexer sut = new("""
             /* 
                 Большой
                 многострочный
