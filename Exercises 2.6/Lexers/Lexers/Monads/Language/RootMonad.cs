@@ -1,4 +1,5 @@
 ﻿using Lexers.Locations;
+using Lexers.Monads.Language.Comments;
 
 namespace Lexers.Monads.Language;
 
@@ -8,6 +9,9 @@ public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty
     {
         if (character is ' ' or '\t' or '\r' or '\n')
             return new RootMonad(position);
+
+        if (character is '/')
+            return new MaybeCommentMonad(character.ToString(), Location.StartAt(position));
         
         if (char.IsDigit(character))
             return new UncompletedNumberMonad(character.ToString(), Location.StartAt(position));
