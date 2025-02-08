@@ -155,4 +155,28 @@ public class MonadLexerTests
         // Assert
         tokens.Should().BeEmpty();
     }
+
+    [Fact(DisplayName = "Звёздочки и слэши между многострочными комментариями возвращаются")]
+    public void Asterisks_and_slashes_extracted_between_multi_line_comments()
+    {
+        // Arrange
+        MonadLexer sut = new("""
+            /* 
+                Большой
+                // многострочный
+                комментарий
+            */ / /* Тут много звёзд: * и * */ */
+            """);
+
+        // Act
+        var tokens = sut.Scan();
+
+        // Assert
+        tokens.Should().BeEquivalentTo(new Token[]
+        {
+            new("/", ((5,4),(5,4))),
+            new("*", ((5,35),(5,35))),
+            new("/", ((5,36),(5,36)))
+        });
+    }
 }
