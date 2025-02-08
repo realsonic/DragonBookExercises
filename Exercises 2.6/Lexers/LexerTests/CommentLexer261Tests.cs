@@ -78,7 +78,7 @@ public class CommentLexer261Tests
 
         // Assert
         tokens[0].Should().Be(new IdToken("id1", ((1, 1), (1, 3))));
-        tokens[1].Should().Be(new IdToken("id2", ((1, 4), (1, 6))));
+        tokens[1].Should().Be(new IdToken("id2", ((1, 5), (1, 7))));
     }
 
     [Fact(DisplayName = "Другие символы возвращаются как отдельные токены")]
