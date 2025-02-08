@@ -179,4 +179,35 @@ public class MonadLexerTests
             new("/", ((5,36),(5,36)))
         });
     }
+
+    [Fact(DisplayName = "Операторы отношений возвращаются")]
+    public void Comparision_operators_extracted()
+    {
+        // Arrange
+        MonadLexer sut = new("""
+            < <=
+            == !=
+            >= >
+            <==>!==
+            """);
+
+        // Act
+        var tokens = sut.Scan();
+
+        // Assert
+        tokens.Should().BeEquivalentTo(new Token[]
+        {
+            new ComparisionToken("<", ((1,1),(1,1))),
+            new ComparisionToken("<=", ((1,3),(1,4))),
+            new ComparisionToken("==", ((2,1),(2,2))),
+            new ComparisionToken("!=", ((2,4),(2,5))),
+            new ComparisionToken(">=", ((3,1),(3,2))),
+            new ComparisionToken(">", ((3,4),(3,4))),
+            new ComparisionToken("<=", ((4,1),(4,2))),
+            new("=", ((4,3),(4,3))),
+            new ComparisionToken(">", ((4,4),(4,4))),
+            new ComparisionToken("!=", ((4,5),(4,6))),
+            new("=", ((4,7),(4,7)))
+        });
+    }
 }
