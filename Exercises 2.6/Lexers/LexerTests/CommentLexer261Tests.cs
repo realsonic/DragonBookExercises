@@ -63,8 +63,8 @@ public class CommentLexer261Tests
         var tokens = sut.Scan().ToList();
 
         // Assert
-        tokens[0].Should().Be(new FalseToken(((1, 1), (1, 4))));
-        tokens[1].Should().Be(new TrueToken(((1, 5), (1, 9))));
+        tokens[0].Should().Be(new TrueToken(((1, 1), (1, 4))));
+        tokens[1].Should().Be(new FalseToken(((1, 6), (1, 10))));
     }
 
     [Fact(DisplayName = "Идентификаторы распознаются")]

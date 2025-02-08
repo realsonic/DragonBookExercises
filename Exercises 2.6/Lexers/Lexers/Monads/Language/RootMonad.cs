@@ -12,6 +12,9 @@ public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty
         if (char.IsDigit(character))
             return new UncompletedNumberMonad(character.ToString(), Location.StartAt(position));
 
+        if(char.IsLetter(character))
+            return new UncompletedWordMonad(character.ToString(), Location.StartAt(position));
+
         return new UnknownLexemeMonad(character.ToString(), Location.StartAt(position));
     }
 
