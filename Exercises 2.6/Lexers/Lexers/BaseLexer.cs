@@ -38,7 +38,7 @@ public class BaseLexer
                 NextChar();
             } while (CurrentChar is not null && char.IsDigit(CurrentChar.Value));
 
-            return new NumberToken(numberString, null/*TODO*/, int.Parse(numberString));
+            return new NumberToken(int.Parse(numberString), numberString, null/*TODO*/);
         }
 
         if (CurrentChar is not null && char.IsLetter(CurrentChar.Value))

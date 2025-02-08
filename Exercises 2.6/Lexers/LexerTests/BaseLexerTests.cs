@@ -47,9 +47,9 @@ public class BaseLexerTests
         // Assert
         tokens.Should().BeEquivalentTo(new NumberToken[]
         {
-            new("1", null, 1),
-            new("23", null, 23),
-            new("456", null, 456)
+            new(1, "1", null),
+            new(23, "23", null),
+            new(456, "456", null)
         });
     }
 
