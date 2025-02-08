@@ -13,7 +13,7 @@ public record UncompletedNumberMonad(string Lexeme, Location Location) : Uncompl
         return new CompletedLexemeMonad(
             Token: new NumberToken(int.Parse(Lexeme), Lexeme, Location),
             Location: Location,
-            Remain: new RootMonad(position) + (character, position));
+            Remain: RootMonad.Remain(character, position));
     }
 
     public override LexemeMonad Finalize() => new CompletedLexemeMonad(

@@ -16,4 +16,6 @@ public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty
     }
 
     public override LexemeMonad Finalize() => new RootMonad(this);
+
+    public static LexemeMonad Remain(char character, Position position) => new RootMonad(position) + (character, position);
 }
