@@ -1,4 +1,4 @@
-using FluentAssertions;
+п»їusing FluentAssertions;
 
 using Lexers;
 using Lexers.Tokens;
@@ -9,7 +9,7 @@ namespace LexerTests;
 
 public class MonadLexerTests
 {
-    [Fact(DisplayName = "Строка пробельных символов не возвращает токенов")]
+    [Fact(DisplayName = "РЎС‚СЂРѕРєР° РїСЂРѕР±РµР»СЊРЅС‹С… СЃРёРјРІРѕР»РѕРІ РЅРµ РІРѕР·РІСЂР°С‰Р°РµС‚ С‚РѕРєРµРЅРѕРІ")]
     public void Whitespace_string_returns_no_tokens()
     {
         // Arrange
@@ -22,7 +22,7 @@ public class MonadLexerTests
         tokens.Should().BeEmpty();
     }
 
-    [Fact(DisplayName = "При двух переносах строки номер строки - 3")]
+    [Fact(DisplayName = "РџСЂРё РґРІСѓС… РїРµСЂРµРЅРѕСЃР°С… СЃС‚СЂРѕРєРё РЅРѕРјРµСЂ СЃС‚СЂРѕРєРё - 3")]
     public void Two_new_lines_gives_Line_3()
     {
         // Arrange
@@ -36,7 +36,7 @@ public class MonadLexerTests
         sut.CurrentPosition.Line.Should().Be(3);
     }
 
-    [Fact(DisplayName = "Числа распознаются")]
+    [Fact(DisplayName = "Р§РёСЃР»Р° СЂР°СЃРїРѕР·РЅР°СЋС‚СЃСЏ")]
     public void Numbers_parsed()
     {
         // Arrange
@@ -54,7 +54,7 @@ public class MonadLexerTests
         });
     }
 
-    [Fact(DisplayName = "Булевы литералы распознаются")]
+    [Fact(DisplayName = "Р‘СѓР»РµРІС‹ Р»РёС‚РµСЂР°Р»С‹ СЂР°СЃРїРѕР·РЅР°СЋС‚СЃСЏ")]
     public void Boolean_parsed()
     {
         // Arrange
@@ -68,7 +68,7 @@ public class MonadLexerTests
         tokens[1].Should().Be(new FalseToken(((1, 6), (1, 10))));
     }
 
-    [Fact(DisplayName = "Идентификаторы распознаются")]
+    [Fact(DisplayName = "РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂС‹ СЂР°СЃРїРѕР·РЅР°СЋС‚СЃСЏ")]
     public void Id_parsed()
     {
         // Arrange
@@ -82,7 +82,7 @@ public class MonadLexerTests
         tokens[1].Should().Be(new IdToken("id2", ((1, 5), (1, 7))));
     }
 
-    [Fact(DisplayName = "Другие символы возвращаются как отдельные токены")]
+    [Fact(DisplayName = "Р”СЂСѓРіРёРµ СЃРёРјРІРѕР»С‹ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ РєР°Рє РѕС‚РґРµР»СЊРЅС‹Рµ С‚РѕРєРµРЅС‹")]
     public void Others_parsed()
     {
         // Arrange
@@ -98,13 +98,13 @@ public class MonadLexerTests
         });
     }
 
-    [Fact(DisplayName = "Однострочные комментарии пропускаются")]
+    [Fact(DisplayName = "РћРґРЅРѕСЃС‚СЂРѕС‡РЅС‹Рµ РєРѕРјРјРµРЅС‚Р°СЂРёРё РїСЂРѕРїСѓСЃРєР°СЋС‚СЃСЏ")]
     public void Single_line_comments_skipped()
     {
         // Arrange
         MonadLexer sut = new("""
-            // Комментарий 1
-            // Комментарий 2
+            // РљРѕРјРјРµРЅС‚Р°СЂРёР№ 1
+            // РљРѕРјРјРµРЅС‚Р°СЂРёР№ 2
             """);
 
         // Act
@@ -114,16 +114,16 @@ public class MonadLexerTests
         tokens.Should().BeEmpty();
     }
 
-    [Fact(DisplayName = "Число и слэши между однострочными комментариями возвращаются")]
+    [Fact(DisplayName = "Р§РёСЃР»Рѕ Рё СЃР»СЌС€Рё РјРµР¶РґСѓ РѕРґРЅРѕСЃС‚СЂРѕС‡РЅС‹РјРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏРјРё РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ")]
     public void Number_and_slash_extracted_between_singleline_comments()
     {
         // Arrange
         MonadLexer sut = new("""
-            // Комментарий 1
+            // РљРѕРјРјРµРЅС‚Р°СЂРёР№ 1
             1234
-            // Комментарий 2
+            // РљРѕРјРјРµРЅС‚Р°СЂРёР№ 2
             / /
-            // Комментарий 3
+            // РљРѕРјРјРµРЅС‚Р°СЂРёР№ 3
             """);
 
         // Act
@@ -138,15 +138,15 @@ public class MonadLexerTests
         });
     }
 
-    [Fact(DisplayName = "Многострочные комментарии пропускаются")]
+    [Fact(DisplayName = "РњРЅРѕРіРѕСЃС‚СЂРѕС‡РЅС‹Рµ РєРѕРјРјРµРЅС‚Р°СЂРёРё РїСЂРѕРїСѓСЃРєР°СЋС‚СЃСЏ")]
     public void Multi_line_comments_skipped()
     {
         // Arrange
         MonadLexer sut = new("""
             /* 
-                Большой
-                многострочный
-                комментарий
+                Р‘РѕР»СЊС€РѕР№
+                РјРЅРѕРіРѕСЃС‚СЂРѕС‡РЅС‹Р№
+                РєРѕРјРјРµРЅС‚Р°СЂРёР№
             */
             """);
 
@@ -157,16 +157,16 @@ public class MonadLexerTests
         tokens.Should().BeEmpty();
     }
 
-    [Fact(DisplayName = "Звёздочки и слэши между многострочными комментариями возвращаются")]
+    [Fact(DisplayName = "Р—РІС‘Р·РґРѕС‡РєРё Рё СЃР»СЌС€Рё РјРµР¶РґСѓ РјРЅРѕРіРѕСЃС‚СЂРѕС‡РЅС‹РјРё РєРѕРјРјРµРЅС‚Р°СЂРёСЏРјРё РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ")]
     public void Asterisks_and_slashes_extracted_between_multi_line_comments()
     {
         // Arrange
         MonadLexer sut = new("""
             /* 
-                Большой
-                // многострочный
-                комментарий
-            */ / /* Тут много звёзд: * и * */ */
+                Р‘РѕР»СЊС€РѕР№
+                // РјРЅРѕРіРѕСЃС‚СЂРѕС‡РЅС‹Р№
+                РєРѕРјРјРµРЅС‚Р°СЂРёР№
+            */ / /* РўСѓС‚ РјРЅРѕРіРѕ Р·РІС‘Р·Рґ: * Рё * */ */
             """);
 
         // Act
@@ -181,7 +181,7 @@ public class MonadLexerTests
         });
     }
 
-    [Fact(DisplayName = "Операторы отношений возвращаются")]
+    [Fact(DisplayName = "РћРїРµСЂР°С‚РѕСЂС‹ РѕС‚РЅРѕС€РµРЅРёР№ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ")]
     public void Comparision_operators_extracted()
     {
         // Arrange
@@ -212,7 +212,7 @@ public class MonadLexerTests
         });
     }
 
-    [Fact(DisplayName = "Числа с плавающей точкой возвращаются")]
+    [Fact(DisplayName = "Р§РёСЃР»Р° СЃ РїР»Р°РІР°СЋС‰РµР№ С‚РѕС‡РєРѕР№ РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ")]
     public void Decimals_extracted()
     {
         // Arrange
