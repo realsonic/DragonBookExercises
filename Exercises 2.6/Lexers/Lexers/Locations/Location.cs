@@ -12,5 +12,5 @@ public record Location(Position Start, Position End)
     public static implicit operator Location(((int Line, int Column) start, (int Line, int Column) end) coordinates)
         => Create(coordinates.start, coordinates.end);
 
-    public override string? ToString() => $"[{Start} ➡️ {End}]";
+    public override string? ToString() => $"{Start}–{End}";
 }

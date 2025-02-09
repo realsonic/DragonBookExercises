@@ -1,6 +1,7 @@
 ﻿using Lexers.Locations;
 using Lexers.Monads.Language.Comments;
 using Lexers.Monads.Language.Comparisions;
+using Lexers.Monads.Language.Numbers;
 
 namespace Lexers.Monads.Language;
 
@@ -19,6 +20,9 @@ public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty
 
         if (character is '=' or '!')
             return new MaybeEqualityMonad(character.ToString(), Location.StartAt(position));
+
+        if(character is '.')
+            return new MaybeDecimalNumberMonad(character.ToString(), Location.StartAt(position));
 
         if (char.IsDigit(character))
             return new UncompletedNumberMonad(character.ToString(), Location.StartAt(position));

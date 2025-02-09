@@ -3,6 +3,7 @@ using FluentAssertions;
 using Lexers;
 using Lexers.Tokens;
 using Lexers.Tokens.Keywords;
+using Lexers.Tokens.Numbers;
 
 namespace LexerTests;
 
@@ -45,7 +46,7 @@ public class MonadLexerTests
         var tokens = sut.Scan();
 
         // Assert
-        tokens.Should().BeEquivalentTo(new NumberToken[]
+        tokens.Should().BeEquivalentTo(new IntegerNumberToken[]
         {
             new(1, "1", ((1, 1), (1, 1))),
             new(23, "23", ((1, 3), (1, 4))),
@@ -131,7 +132,7 @@ public class MonadLexerTests
         // Assert
         tokens.Should().BeEquivalentTo(new Token[]
         {
-            new NumberToken(1234, Lexeme: "1234", Location: ((2,1),(2,4))),
+            new IntegerNumberToken(1234, Lexeme: "1234", Location: ((2,1),(2,4))),
             new("/", ((4,1),(4,1))),
             new("/", ((4,3),(4,3)))
         });
@@ -208,6 +209,24 @@ public class MonadLexerTests
             new ComparisionToken(">", ((4,4),(4,4))),
             new ComparisionToken("!=", ((4,5),(4,6))),
             new("=", ((4,7),(4,7)))
+        });
+    }
+
+    [Fact(DisplayName = "Числа с плавающей точкой возвращаются")]
+    public void Decimals_extracted()
+    {
+        // Arrange
+        MonadLexer sut = new("2. 3.14 .5");
+
+        // Act
+        var tokens = sut.Scan();
+
+        // Assert
+        tokens.Should().BeEquivalentTo(new DecimalNumberToken[]
+        {
+            new(2, "2.", ((1,1), (1,2))),
+            new(3.14m, "3.14", ((1,4), (1,7))),
+            new(.5m, ".5", ((1,9), (1,10))),
         });
     }
 }
