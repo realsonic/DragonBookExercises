@@ -8,8 +8,8 @@ public record MaybeCommentMonad(string Lexeme, Location Location) : UncompletedL
     {
         '/' => new UncompletedSingleLineCommentMonad(Lexeme + character, Location.EndAt(position)),
         '*' => new UncompletedMultiLineCommentMonad(false, Lexeme + character, Location.EndAt(position)),
-        _ => new CompletedLexemeMonad(new Token(Lexeme, Location), Location, RootMonad.Remain(character, position))
+        _ => new CompletedLexemeMonad(new Token(Lexeme, Location), RootMonad.Remain(character, position))
     };
 
-    public override LexemeMonad Finalize() => new CompletedLexemeMonad(new Token(Lexeme, Location), Location, null);
+    public override LexemeMonad Finalize() => new CompletedLexemeMonad(new Token(Lexeme, Location), null);
 }

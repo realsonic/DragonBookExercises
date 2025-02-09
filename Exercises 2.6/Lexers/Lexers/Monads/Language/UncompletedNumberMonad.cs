@@ -10,14 +10,8 @@ public record UncompletedNumberMonad(string Lexeme, Location Location) : Uncompl
         if (char.IsDigit(character))
             return new UncompletedNumberMonad(Lexeme + character, Location.EndAt(position));
 
-        return new CompletedLexemeMonad(
-            Token: new NumberToken(int.Parse(Lexeme), Lexeme, Location),
-            Location: Location,
-            Remain: RootMonad.Remain(character, position));
+        return new CompletedLexemeMonad(new NumberToken(int.Parse(Lexeme), Lexeme, Location), RootMonad.Remain(character, position));
     }
 
-    public override LexemeMonad Finalize() => new CompletedLexemeMonad(
-            Token: new NumberToken(int.Parse(Lexeme), Lexeme, Location),
-            Location: Location,
-            Remain: null);
+    public override LexemeMonad Finalize() => new CompletedLexemeMonad(new NumberToken(int.Parse(Lexeme), Lexeme, Location), null);
 }

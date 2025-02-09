@@ -13,17 +13,17 @@ internal record UncompletedWordMonad(string Lexeme, Location Location) : Uncompl
             return new UncompletedWordMonad(Lexeme + character, Location.EndAt(position));
 
         if (TryGetKeywordToken(Lexeme, Location, out Token? token))
-            return new CompletedLexemeMonad(token, Location, RootMonad.Remain(character, position));
+            return new CompletedLexemeMonad(token, RootMonad.Remain(character, position));
 
-        return new CompletedLexemeMonad(new IdToken(Lexeme, Location), Location, RootMonad.Remain(character, position));
+        return new CompletedLexemeMonad(new IdToken(Lexeme, Location), RootMonad.Remain(character, position));
     }
 
     public override LexemeMonad Finalize()
     {
         if (TryGetKeywordToken(Lexeme, Location, out Token? token))
-            return new CompletedLexemeMonad(token, Location, null);
+            return new CompletedLexemeMonad(token, null);
 
-        return new CompletedLexemeMonad(new IdToken(Lexeme, Location), Location, null);
+        return new CompletedLexemeMonad(new IdToken(Lexeme, Location), null);
     }
 
     private bool TryGetKeywordToken(string lexeme, Location location, [MaybeNullWhen(false)] out Token token)
