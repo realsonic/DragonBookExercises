@@ -1,5 +1,6 @@
 ﻿using Lexers.Locations;
 using Lexers.Monads.Language.Comments;
+using Lexers.Monads.Language.Comparisions;
 
 namespace Lexers.Monads.Language;
 
@@ -12,11 +13,17 @@ public record RootMonad(Position Position) : UncompletedLexemeMonad(string.Empty
 
         if (character is '/')
             return new MaybeCommentMonad(character.ToString(), Location.StartAt(position));
-        
+
+        if (character is '<' or '>')
+            return new UncompletedComparisionMonad(character.ToString(), Location.StartAt(position));
+
+        if (character is '=' or '!')
+            return new MaybeEqualityMonad(character.ToString(), Location.StartAt(position));
+
         if (char.IsDigit(character))
             return new UncompletedNumberMonad(character.ToString(), Location.StartAt(position));
 
-        if(char.IsLetter(character))
+        if (char.IsLetter(character))
             return new UncompletedWordMonad(character.ToString(), Location.StartAt(position));
 
         return new UnknownLexemeMonad(character.ToString(), Location.StartAt(position));
