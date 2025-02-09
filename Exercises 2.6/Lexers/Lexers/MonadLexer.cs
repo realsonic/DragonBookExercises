@@ -20,10 +20,7 @@ public class MonadLexer(IEnumerable<char> input)
             while (monad is CompletedLexemeMonad completed)
             {
                 yield return completed.Token;
-                if (completed.Remain is not null)
-                    monad = completed.Remain;
-                else
-                    break;
+                monad = completed.Remain ?? new RootMonad(monad.Location.End);
             }
 
             switch (monad)
@@ -42,10 +39,7 @@ public class MonadLexer(IEnumerable<char> input)
         while (finalMonad is CompletedLexemeMonad completed)
         {
             yield return completed.Token;
-            if (completed.Remain is not null)
-                finalMonad = completed.Remain;
-            else
-                break;
+            finalMonad = completed.Remain ?? new RootMonad(finalMonad.Location.End);
         }
 
         switch (finalMonad)
